@@ -1,0 +1,10 @@
+github.com/nats-io/go-nats v1.6.0 h1:FznPwMfrVwGnSCh7JTXyJDRW0TIkD4Tr+M1LPJt9T70=
+github.com/nats-io/go-nats v1.6.0/go.mod h1:+t7RHT5ApZebkrQdnn6AhQJmhJJiKAvJUio1PiiCtj0=
+github.com/nats-io/nuid v1.0.0 h1:44QGdhbiANq8ZCbUkdn6W5bqtg+mHuDE4wOUuxxndFs=
+github.com/nats-io/nuid v1.0.0/go.mod h1:19wcPz3Ph3q0Jbyiqsd0kePYG7A95tJPxeL+1OSON2c=
+github.com/openfaas-incubator/connector-sdk v0.0.0-20181118154933-2db120a2ec4b h1:XRljIkAJNgYWzx5py2w/fRHPVuRS0/5kSXSlPTT/Evw=
+github.com/openfaas-incubator/connector-sdk v0.0.0-20181118154933-2db120a2ec4b/go.mod h1:jHCtd1HCZwhuwdPy4OB8CQU7ZqzxBdWNhIhH/khCJqQ=
+github.com/openfaas/faas v0.0.0-20181122165013-495cf9e7aff0 h1:4+fM0yvoGK5uhdI3kKLzJ8bZTmcyss2FAU6hfpEXh84=
+github.com/openfaas/faas v0.0.0-20181122165013-495cf9e7aff0/go.mod h1:E0m2rLup0Vvxg53BKxGgaYAGcZa3Xl+vvL7vSi5yQ14=
+github.com/openfaas/faas-provider v0.0.0-20181104131730-8b3147b013c6 h1:PGmPk5iR8IY2Gl4SlMd2+o4sUmeEFBGFy0SmJoxSIlU=
+github.com/openfaas/faas-provider v0.0.0-20181104131730-8b3147b013c6/go.mod h1:W4OIp33RUOpR7wW+omJB/7GhIydRmYXvKf/VqUKI4yM=
