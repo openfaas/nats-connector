@@ -1,0 +1,32 @@
+sudo: required
+
+language: go
+
+go:
+  - "1.10.x"
+
+services:
+      - docker
+
+addons:
+  apt:
+    packages:
+      - docker-ce
+
+script:
+    - make build
+
+after_success:
+    - if [ -z $DOCKER_NS ] ; then
+        export DOCKER_NS=openfaas;
+      fi
+
+    - if [ ! -z "$TRAVIS_TAG" ] ; then 
+        docker tag $DOCKER_NS/nats-connector:latest-dev $DOCKER_NS/nats-connector:$TRAVIS_TAG;
+        echo $DOCKER_PASSWORD | docker login -u=$DOCKER_USERNAME --password-stdin;
+        docker push $DOCKER_NS/nats-connector:$TRAVIS_TAG;
+
+        docker tag $DOCKER_NS/nats-connector:latest-dev quay.io/$DOCKER_NS/nats-connector:$TRAVIS_TAG;
+        echo $QUAY_PASSWORD | docker login -u=$QUAY_USERNAME --password-stdin quay.io;
+        docker push quay.io/$DOCKER_NS/nats-connector:$TRAVIS_TAG;
+      fi

@@ -1,0 +1,44 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    app: nats
+    component: nats-connector
+  name: nats-connector
+  namespace: openfaas
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: nats
+        component: nats-connector
+    spec:
+      containers:
+      - name: nats
+        image: openfaas/nats-connector:0.1.0
+        env:
+          - name: gateway_url
+            value: "http://gateway.openfaas:8080"
+          - name: topics
+            value: "faas-request,"
+          - name: print_response
+            value: "true"
+          - name: print_response_body
+            value: "true"
+          - name: basic_auth
+            value: "true"
+          - name: secret_mount_path
+            value: "/var/secrets/"
+          - name: topic_delimiter
+            value: ","
+          - name: asynchronous_invocation
+            value: "true"
+        volumeMounts:
+            - name: auth
+              readOnly: true
+              mountPath: "/var/secrets/"
+      volumes:
+      - name: auth
+        secret:
+          secretName: basic-auth

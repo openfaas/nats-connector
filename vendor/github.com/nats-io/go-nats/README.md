@@ -18,6 +18,7 @@ go get github.com/nats-io/gnatsd
 ## Basic Usage
 
 ```go
+import nats "github.com/nats-io/go-nats"
 
 // Connect to a server
 nc, _ := nats.Connect(nats.DefaultURL)
@@ -113,6 +114,48 @@ c.Subscribe("help", func(subj, reply string, msg string) {
 
 // Close connection
 c.Close();
+```
+
+## New Authentication (Nkeys and User Credentials)
+This requires server with version >= 2.0.0
+
+NATS servers have a new security and authentication mechanism to authenticate with user credentials and Nkeys.
+The simplest form is to use the helper method UserCredentials(credsFilepath).
+```go
+nc, err := nats.Connect(url, UserCredentials("user.creds"))
+```
+
+The helper methos creates two callback handlers to present the user JWT and sign the nonce challenge from the server.
+The core client library never has direct access to your private key and simply performs the callback for signing the server challenge.
+The helper will load and wipe and erase memory it uses for each connect or reconnect.
+
+The helper also can take two entries, one for the JWT and one for the NKey seed file.
+```go
+nc, err := nats.Connect(url, UserCredentials("user.jwt", "user.nk"))
+```
+
+You can also set the callback handlers directly and manage challenge signing directly.
+```go
+nc, err := nats.Connect(url, UserJWT(jwtCB, sigCB))
+```
+
+Bare Nkeys are also supported. The nkey seed should be in a read only file, e.g. seed.txt
+```bash
+> cat seed.txt
+# This is my seed nkey!
+SUAGMJH5XLGZKQQWAWKRZJIGMOU4HPFUYLXJMXOO5NLFEO2OOQJ5LPRDPM
+```
+
+This is a helper function which will load and decode and do the proper signing for the server nonce.
+It will clear memory in between invocations.
+You can choose to use the low level option and provide the public key and a signature callback on your own.
+
+```go
+opt, err := nats.NkeyOptionFromSeed("seed.txt")
+nc, err := nats.Connect(serverUrl, opt)
+
+// Direct
+nc, err := nats.Connect(serverUrl, Nkey(pubNkey, sigCB))
 ```
 
 ## TLS
@@ -271,7 +314,7 @@ nc, err = nats.Connect(servers,
 	nats.DisconnectHandler(func(nc *nats.Conn) {
 		fmt.Printf("Got disconnected!\n")
 	}),
-	nats.ReconnectHandler(func(_ *nats.Conn) {
+	nats.ReconnectHandler(func(nc *nats.Conn) {
 		fmt.Printf("Got reconnected to %v!\n", nc.ConnectedUrl())
 	}),
 	nats.ClosedHandler(func(nc *nats.Conn) {
