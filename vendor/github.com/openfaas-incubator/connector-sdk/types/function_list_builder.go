@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"strings"
 
 	"github.com/openfaas/faas-provider/auth"
 	"github.com/openfaas/faas/gateway/requests"
@@ -15,9 +16,10 @@ import (
 
 // FunctionLookupBuilder builds a list of OpenFaaS functions
 type FunctionLookupBuilder struct {
-	GatewayURL  string
-	Client      *http.Client
-	Credentials *auth.BasicAuthCredentials
+	GatewayURL     string
+	Client         *http.Client
+	Credentials    *auth.BasicAuthCredentials
+	TopicDelimiter string
 }
 
 // Build compiles a map of topic names and functions that have
@@ -52,18 +54,40 @@ func (s *FunctionLookupBuilder) Build() (map[string][]string, error) {
 	}
 
 	for _, function := range functions {
+
 		if function.Annotations != nil {
+
 			annotations := *function.Annotations
 
-			if topic, pass := annotations["topic"]; pass {
+			if topicNames, exist := annotations["topic"]; exist {
 
-				if serviceMap[topic] == nil {
-					serviceMap[topic] = []string{}
+				if len(s.TopicDelimiter) > 0 && strings.Count(topicNames, s.TopicDelimiter) > 0 {
+
+					topicSlice := strings.Split(topicNames, s.TopicDelimiter)
+
+					for _, topic := range topicSlice {
+						serviceMap = appendServiceMap(topic, function.Name, serviceMap)
+					}
+				} else {
+					serviceMap = appendServiceMap(topicNames, function.Name, serviceMap)
 				}
-				serviceMap[topic] = append(serviceMap[topic], function.Name)
 			}
 		}
 	}
-
 	return serviceMap, err
+}
+
+func appendServiceMap(key string, function string, sm map[string][]string) map[string][]string {
+
+	key = strings.TrimSpace(key)
+
+	if len(key) > 0 {
+
+		if sm[key] == nil {
+			sm[key] = []string{}
+		}
+		sm[key] = append(sm[key], function)
+	}
+
+	return sm
 }
