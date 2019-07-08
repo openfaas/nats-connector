@@ -1,5 +1,6 @@
-// Copyright (c) OpenFaaS Project 2018. All rights reserved.
-// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+/// Copyright (c) OpenFaaS Project 2018. All rights reserved.
+/// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
 package nats
 
 import (
@@ -7,23 +8,30 @@ import (
 	"sync"
 	"time"
 
-	nats "github.com/nats-io/go-nats"
+	nats "github.com/nats-io/nats.go"
 	"github.com/openfaas-incubator/connector-sdk/types"
 )
 
 const queueGroup = "openfaas_nats_worker_group"
 const clientName = "openfaas_connector"
 
+// BrokerConfig high level config for the broker
 type BrokerConfig struct {
 	Host        string
 	ConnTimeout time.Duration
+}
+
+// Broker used to subscribe to NATS subjects
+type Broker interface {
+	Subscribe(types.Controller, []string)
 }
 
 type broker struct {
 	client *nats.Conn
 }
 
-func NewBroker(config BrokerConfig) *broker {
+// NewBroker loops until we are able to connect to the NATS server
+func NewBroker(config BrokerConfig) Broker {
 	broker := &broker{}
 
 	brokerURL := "nats://" + config.Host + ":4222"
@@ -44,7 +52,8 @@ func NewBroker(config BrokerConfig) *broker {
 	return broker
 }
 
-func (b *broker) Subscribe(controller *types.Controller, topics []string) {
+// Subscribe to a list of NATS subjects and block until interrupted
+func (b *broker) Subscribe(controller types.Controller, topics []string) {
 	log.Printf("Configured topics: %v", topics)
 
 	wg := sync.WaitGroup{}
