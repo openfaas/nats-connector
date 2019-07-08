@@ -1,11 +1,11 @@
-FROM golang:1.10 as build
+FROM golang:1.13 as build
 
 RUN mkdir -p /go/src/github.com/openfaas-incubator/nats-connector
 WORKDIR /go/src/github.com/openfaas-incubator/nats-connector
 
-COPY nats	nats
-COPY config	config
 COPY vendor     vendor
+COPY config	    config
+COPY nats	    nats
 COPY main.go    .
 
 # Run a gofmt and exclude all vendored code.

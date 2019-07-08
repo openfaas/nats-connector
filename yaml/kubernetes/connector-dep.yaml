@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: nats
-        image: openfaas/nats-connector:0.1.0
+        image: openfaas/nats-connector:0.1.1
         env:
           - name: gateway_url
             value: "http://gateway.openfaas:8080"

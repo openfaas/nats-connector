@@ -1,5 +1,6 @@
 // Copyright (c) OpenFaaS Project 2018. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
 package config
 
 import (
@@ -9,15 +10,22 @@ import (
 	"time"
 )
 
+// Config for the NATS Connector
 type Config struct {
-	GatewayURL      string
-	UpstreamTimeout time.Duration
-	Topics          []string
-	PrintResponse   bool
-	RebuildInterval time.Duration
-	Broker          string
+	Broker string
+	Topics []string
+
+	GatewayURL               string
+	UpstreamTimeout          time.Duration
+	RebuildInterval          time.Duration
+	PrintResponse            bool
+	PrintResponseBody        bool
+	PrintSync                bool
+	AsyncFunctionInvocation  bool
+	TopicAnnotationDelimiter string
 }
 
+// Get will load the NATS Connector config from the environment variables
 func Get() Config {
 	broker := "nats"
 	if val, exists := os.LookupEnv("broker_host"); exists {
@@ -63,12 +71,38 @@ func Get() Config {
 		printResponse = (val == "1" || val == "true")
 	}
 
+	printResponseBody := false
+	if val, exists := os.LookupEnv("print_response_body"); exists {
+		printResponseBody = (val == "1" || val == "true")
+	}
+
+	printSync := false
+	if val, exists := os.LookupEnv("print_sync"); exists {
+		printSync = (val == "1" || val == "true")
+	}
+
+	asyncFunctionInvocation := true
+	if val, exists := os.LookupEnv("asynchronous_invocation"); exists {
+		asyncFunctionInvocation = (val == "1" || val == "true")
+	}
+
+	delimiter := ","
+	if val, exists := os.LookupEnv("topic_delimiter"); exists {
+		if len(val) > 0 {
+			delimiter = val
+		}
+	}
+
 	return Config{
-		GatewayURL:      gatewayURL,
-		UpstreamTimeout: upstreamTimeout,
-		Topics:          topics,
-		RebuildInterval: rebuildInterval,
-		Broker:          broker,
-		PrintResponse:   printResponse,
+		Broker:                   broker,
+		Topics:                   topics,
+		GatewayURL:               gatewayURL,
+		UpstreamTimeout:          upstreamTimeout,
+		RebuildInterval:          rebuildInterval,
+		PrintResponse:            printResponse,
+		PrintResponseBody:        printResponseBody,
+		PrintSync:                printSync,
+		AsyncFunctionInvocation:  asyncFunctionInvocation,
+		TopicAnnotationDelimiter: delimiter,
 	}
 }

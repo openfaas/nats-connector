@@ -1,5 +1,6 @@
 // Copyright (c) OpenFaaS Project 2018. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
 package main
 
 import (
@@ -13,9 +14,14 @@ func main() {
 	config := config.Get()
 
 	controllerConfig := &types.ControllerConfig{
-		RebuildInterval: config.RebuildInterval,
-		GatewayURL:      config.GatewayURL,
-		PrintResponse:   config.PrintResponse,
+		UpstreamTimeout:          config.UpstreamTimeout,
+		GatewayURL:               config.GatewayURL,
+		RebuildInterval:          config.RebuildInterval,
+		PrintResponse:            config.PrintResponse,
+		PrintResponseBody:        config.PrintResponseBody,
+		TopicAnnotationDelimiter: config.TopicAnnotationDelimiter,
+		AsyncFunctionInvocation:  config.AsyncFunctionInvocation,
+		PrintSync:                config.PrintSync,
 	}
 
 	controller := types.NewController(creds, controllerConfig)

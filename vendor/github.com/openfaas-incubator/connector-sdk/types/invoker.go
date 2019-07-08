@@ -1,7 +1,11 @@
+// Copyright (c) OpenFaaS Author(s) 2019. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
 package types
 
 import (
 	"bytes"
+	"context"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -19,6 +23,7 @@ type Invoker struct {
 }
 
 type InvokerResponse struct {
+	Context  context.Context
 	Body     *[]byte
 	Header   *http.Header
 	Status   int
@@ -38,9 +43,15 @@ func NewInvoker(gatewayURL string, client *http.Client, printResponse bool) *Inv
 
 // Invoke triggers a function by accessing the API Gateway
 func (i *Invoker) Invoke(topicMap *TopicMap, topic string, message *[]byte) {
+	i.InvokeWithContext(context.Background(), topicMap, topic, message)
+}
+
+//InvokeWithContext triggers a function by accessing the API Gateway while propagating context
+func (i *Invoker) InvokeWithContext(ctx context.Context, topicMap *TopicMap, topic string, message *[]byte) {
 	if len(*message) == 0 {
 		i.Responses <- InvokerResponse{
-			Error: fmt.Errorf("no message to send"),
+			Context: ctx,
+			Error:   fmt.Errorf("no message to send"),
 		}
 	}
 
@@ -51,16 +62,18 @@ func (i *Invoker) Invoke(topicMap *TopicMap, topic string, message *[]byte) {
 		gwURL := fmt.Sprintf("%s/%s", i.GatewayURL, matchedFunction)
 		reader := bytes.NewReader(*message)
 
-		body, statusCode, header, doErr := invokefunction(i.Client, gwURL, reader)
+		body, statusCode, header, doErr := invokefunction(ctx, i.Client, gwURL, reader)
 
 		if doErr != nil {
 			i.Responses <- InvokerResponse{
-				Error: errors.Wrap(doErr, fmt.Sprintf("unable to invoke %s", matchedFunction)),
+				Context: ctx,
+				Error:   errors.Wrap(doErr, fmt.Sprintf("unable to invoke %s", matchedFunction)),
 			}
 			continue
 		}
 
 		i.Responses <- InvokerResponse{
+			Context:  ctx,
 			Body:     body,
 			Status:   statusCode,
 			Header:   header,
@@ -70,9 +83,10 @@ func (i *Invoker) Invoke(topicMap *TopicMap, topic string, message *[]byte) {
 	}
 }
 
-func invokefunction(c *http.Client, gwURL string, reader io.Reader) (*[]byte, int, *http.Header, error) {
+func invokefunction(ctx context.Context, c *http.Client, gwURL string, reader io.Reader) (*[]byte, int, *http.Header, error) {
 
 	httpReq, _ := http.NewRequest(http.MethodPost, gwURL, reader)
+	httpReq.WithContext(ctx)
 
 	if httpReq.Body != nil {
 		defer httpReq.Body.Close()

@@ -7,6 +7,7 @@ go:
 install:
 - go get -t ./...
 - go get github.com/mattn/goveralls
+- go get github.com/wadey/gocovmerge
 - go get -u honnef.co/go/tools/cmd/staticcheck
 - go get -u github.com/client9/misspell/cmd/misspell
 
@@ -17,15 +18,4 @@ before_script:
 - staticcheck ./...
 
 script:
-- go test -v
-- go test -v --race
-- go test -v -covermode=count -coverprofile=coverage.out
-- $HOME/gopath/bin/goveralls -coverprofile coverage.out -service travis-ci
-
-#deploy:
-#- provider: script
-#  skip_cleanup: true
-#  script: curl -sL http://git.io/goreleaser | bash
-#  on:
-#    tags: true
-#    condition: $TRAVIS_OS_NAME = linux
+- if [[ "$TRAVIS_GO_VERSION" == 1.10.* ]] ; then ./scripts/cov.sh TRAVIS; else go test -v -race ./...; fi
