@@ -1,22 +1,26 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app: nats
+    app: nats-connector
     component: nats-connector
   name: nats-connector
   namespace: openfaas
 spec:
   replicas: 1
+  selector:
+    matchLabels:
+      app: nats-connector
+      component: nats-connector
   template:
     metadata:
       labels:
-        app: nats
+        app: nats-connector
         component: nats-connector
     spec:
       containers:
-      - name: nats
-        image: openfaas/nats-connector:0.1.1
+      - name: nats-connector
+        image: openfaas/nats-connector:0.2.0
         env:
           - name: gateway_url
             value: "http://gateway.openfaas:8080"

@@ -3,13 +3,7 @@ NAMESPACE?=openfaas
 .PHONY: build
 
 build:
-	./build.sh $(TAG)
-
-ci-armhf-build:
-	./build.sh $(TAG)
-
-ci-armhf-push:
-	./build.sh $(TAG)
+	docker build -t openfaas/nats-connector:$(TAG) .
 
 push:
-	./push.sh $(TAG)
+	docker push openfaas/nats-connector:$(TAG)

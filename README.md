@@ -9,7 +9,7 @@ The NATS connector connects OpenFaaS functions to NATS topics.
 ## Building
 
 ```
-export TAG=0.1.0
+export TAG=0.2.0
 make build push
 ```
 
@@ -25,8 +25,10 @@ Deploy a function with a `topic` annotation:
 $ faas store deploy figlet --annotation topic="faas-request" --gateway <faas-netes-gateway-url>
 ```
 
-Deply the connector with:
+Deploy the connector with:
 
 ```bash
 kubectl apply -f ./yaml/kubernetes/connector-dep.yml
 ```
+
+Now publish a message on the faas-request topic.
