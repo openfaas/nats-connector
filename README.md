@@ -22,7 +22,9 @@ The following instructions show how to run `kafka-connector` on Kubernetes.
 Deploy a function with a `topic` annotation:
 
 ```bash
-$ faas store deploy figlet --annotation topic="faas-request" --gateway <faas-netes-gateway-url>
+export OPENFAAS_URL="http://localhost:8080" # Set your gateway
+
+faas store deploy figlet --annotation topic="nats-test"
 ```
 
 Deploy the connector with:
@@ -31,4 +33,6 @@ Deploy the connector with:
 kubectl apply -f ./yaml/kubernetes/connector-dep.yml
 ```
 
-Now publish a message on the faas-request topic.
+Now publish a message on the `nats-test` topic.
+
+If you want to configure the topic, then edit ./yaml/kubernetes/connector-dep.yaml
