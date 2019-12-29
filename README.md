@@ -1,7 +1,7 @@
 # nats-connector
 
 [![Go Report Card](https://goreportcard.com/badge/github.com/openfaas-incubator/nats-connector)](https://goreportcard.com/report/github.com/openfaas-incubator/nats-connector) [![Build
-Status](https://travis-ci.org/openfaas-incubator/nats-connector.svg?branch=master)](https://travis-ci.org/openfaas-incubator/nats-connector) [![GoDoc](https://godoc.org/github.com/openfaas-incubator/nats-connector?status.svg)](https://godoc.org/github.com/openfaas-incubator/nats-connector) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+Status](https://travis-ci.com/openfaas-incubator/nats-connector.svg?branch=master)](https://travis-ci.org/openfaas-incubator/nats-connector) [![GoDoc](https://godoc.org/github.com/openfaas-incubator/nats-connector?status.svg)](https://godoc.org/github.com/openfaas-incubator/nats-connector) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![OpenFaaS](https://img.shields.io/badge/openfaas-serverless-blue.svg)](https://www.openfaas.com)
 
 The NATS connector connects OpenFaaS functions to NATS topics.
