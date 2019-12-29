@@ -25,9 +25,10 @@ services:
     hostname: nats-connector
     environment:
       gateway_url: http://gateway:8080
-      topics: "test,"
+      topics: "nats-test,"
       print_response: "true"
       basic_auth: "true"
+      asynchronous_invocation: "false"
       secret_mount_path: "/run/secrets/"
     secrets:
       - basic-auth-password
