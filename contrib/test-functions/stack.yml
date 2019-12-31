@@ -1,0 +1,25 @@
+version: 1.0
+provider:
+  name: openfaas
+  gateway: http://127.0.0.1:8080
+
+configuration:
+  templates:
+    - name: golang-http
+      source: https://github.com/openfaas-incubator/golang-http-template
+
+functions:
+  receive-message:
+    lang: golang-http
+    handler: ./receive-message
+    image: openfaas/receive-message:latest
+    annotations:
+      topic: "nats-test"
+
+  publish-message:
+    lang: golang-http
+    handler: ./publish-message
+    image: openfaas/publish-message:latest
+    environment:
+      nats_url: nats://nats.openfaas:4222
+

@@ -15,24 +15,50 @@ make build push
 
 ## Try it out
 
+Test functions have been created to help you verify the installation of `nats-connector`.  See [`contrib/test-functions`](./contrib/test-functions).
+
 ### Deploy on Kubernetes
 
-The following instructions show how to run `kafka-connector` on Kubernetes.
+The following instructions show how to run and test `nats-connector` on Kubernetes.
 
-Deploy a function with a `topic` annotation:
+1. Deploy the receiver functions, the receiver function must have the `topic` annotation:
 
-```bash
-export OPENFAAS_URL="http://localhost:8080" # Set your gateway
+   ```bash
+   export OPENFAAS_URL="http://localhost:8080" # Set your gateway via env variable or the -g flag
+   faas-cli deploy --name receive-message --image openfaas/receive-message:latest --fprocess='./handler' --annotation topic="nats-test"
+   ```
 
-faas store deploy figlet --annotation topic="nats-test"
-```
+   Alternatively, you can deploy with the `stack.yml` provided in this repo
+   ```
+   cd contrib/test-functions
+   faas-cli deploy -f stack.yml
+   ```
 
-Deploy the connector with:
+2. Deploy the connector with:
 
-```bash
-kubectl apply -f ./yaml/kubernetes/connector-dep.yml
-```
+   ```bash
+   kubectl apply -f ./yaml/kubernetes/connector-dep.yml
+   ```
 
-Now publish a message on the `nats-test` topic.
+3. Now publish a message on the `nats-test` topic.  We have provided a simple function to help do this
 
-If you want to configure the topic, then edit ./yaml/kubernetes/connector-dep.yaml
+   ```bash
+   faas-cli deploy --name publish-message --image openfaas/publish-message:latest --fprocess='./handler' --env nats_url=nats://nats.openfaas:4222
+   ```
+   If you used the `stack.yml` in step 1, then this function is already deployed.
+
+   Invoke the publisher
+   ```bash
+   faas-cli invoke publish-message <<< "test message"
+   ```
+
+4. Verify that the receiver was invoked by checking the logs
+
+   ```bash
+   faas-cli logs receive-message
+
+   2019-12-29T19:06:50Z 2019/12/29 19:06:50 received "test message"
+   ```
+
+### Configuring the NATS topics
+If you want to configure the topics that the connector listens to, then edit the `topics` env variable in  [yaml/kubernetes/connector-dep.yaml](./yaml/kubernetes/connector-dep.yaml)
