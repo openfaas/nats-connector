@@ -12,14 +12,14 @@ functions:
   receive-message:
     lang: golang-http
     handler: ./receive-message
-    image: openfaas/receive-message:latest
+    image: openfaas/nats-receive-message:latest
     annotations:
       topic: "nats-test"
 
   publish-message:
     lang: golang-http
     handler: ./publish-message
-    image: openfaas/publish-message:latest
+    image: openfaas/nats-publish-message:latest
     environment:
       nats_url: nats://nats.openfaas:4222
 
