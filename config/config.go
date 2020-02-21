@@ -10,6 +10,9 @@ import (
 	"time"
 )
 
+const defaultRebuild = time.Second * 3
+const defaultUpstreamTimeout = time.Second * 60
+
 // Config for the NATS Connector
 type Config struct {
 	Broker string
@@ -49,8 +52,8 @@ func Get() Config {
 		gatewayURL = val
 	}
 
-	upstreamTimeout := time.Second * 30
-	rebuildInterval := time.Second * 3
+	upstreamTimeout := defaultUpstreamTimeout
+	rebuildInterval := defaultRebuild
 
 	if val, exists := os.LookupEnv("upstream_timeout"); exists {
 		parsedVal, err := time.ParseDuration(val)
