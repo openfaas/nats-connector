@@ -12,9 +12,14 @@ functions:
   receive-message:
     lang: golang-http
     handler: ./receive-message
-    image: openfaas/nats-receive-message:latest
+    image: openfaas/nats-receive-message:0.1.0
     annotations:
       topic: "nats-test"
+    environment:
+      wait: 10ms # set a wait, if you like for testing.
+      write_timeout: 35s
+      read_timeout: 35s
+      exec_timeout: 35s
 
   publish-message:
     lang: golang-http
