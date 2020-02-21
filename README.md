@@ -1,17 +1,12 @@
 # nats-connector
 
-[![Go Report Card](https://goreportcard.com/badge/github.com/openfaas-incubator/nats-connector)](https://goreportcard.com/report/github.com/openfaas-incubator/nats-connector) [![Build
-Status](https://travis-ci.com/openfaas-incubator/nats-connector.svg?branch=master)](https://travis-ci.org/openfaas-incubator/nats-connector) [![GoDoc](https://godoc.org/github.com/openfaas-incubator/nats-connector?status.svg)](https://godoc.org/github.com/openfaas-incubator/nats-connector) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Build Status](https://travis-ci.com/openfaas-incubator/nats-connector.svg?branch=master)](https://travis-ci.com/openfaas-incubator/nats-connector)
+[![Go Report Card](https://goreportcard.com/badge/github.com/openfaas-incubator/nats-connector)](https://goreportcard.com/report/github.com/openfaas-incubator/nats-connector)
+[![GoDoc](https://godoc.org/github.com/openfaas-incubator/nats-connector?status.svg)](https://godoc.org/github.com/openfaas-incubator/nats-connector)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![OpenFaaS](https://img.shields.io/badge/openfaas-serverless-blue.svg)](https://www.openfaas.com)
 
-The NATS connector connects OpenFaaS functions to NATS topics.
-
-## Building
-
-```
-export TAG=0.2.0
-make build push
-```
+An OpenFaaS event-connector to trigger functions from NATS.
 
 ## Try it out
 
@@ -67,6 +62,15 @@ The following instructions show how to run and test `nats-connector` on Kubernet
 
    2019-12-29T19:06:50Z 2019/12/29 19:06:50 received "test message"
    ```
+
+## Building
+
+Build and release is done via CI, but you can also build your own version locally.
+
+```bash
+export TAG=0.2.1
+make build push
+```
 
 ### Configuration
 
