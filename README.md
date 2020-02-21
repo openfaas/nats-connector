@@ -72,7 +72,7 @@ The following instructions show how to run and test `nats-connector` on Kubernet
 
 Configuration is by environment variable, which can be set in the Kubernetes YAML file: [yaml/kubernetes/connector-dep.yaml](./yaml/kubernetes/connector-dep.yaml)
 
-| Environment variable | Description                   |  Default                                        |
+| Variable             | Description                   |  Default                                        |
 | -------------------- | ------------------------------|--------------------------------------------------|
 | `topics`             | Delimited list of topics    |  `nats-test,`                                   |
 | `broker_host`        | The host, but not the port for NATS | `nats` |
