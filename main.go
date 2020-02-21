@@ -4,7 +4,9 @@
 package main
 
 import (
+	"fmt"
 	"log"
+	"strconv"
 
 	"github.com/openfaas-incubator/connector-sdk/types"
 	"github.com/openfaas-incubator/nats-connector/config"
@@ -33,6 +35,25 @@ func main() {
 		Host:        config.Broker,
 		ConnTimeout: config.UpstreamTimeout, // ConnTimeout isn't the same as UpstreamTimeout, it's just the delay to connect to NATS.
 	}
+
+	fmt.Printf(`==============================================================================
+NATS Connector for OpenFaaS
+
+Gateway URL: %s
+NATS URL: nats://%s:4222
+Topics: %s
+Upstream timeout: %s
+Topic-map rebuild interval: %s
+Async invocation: %q
+==============================================================================
+
+`, config.GatewayURL,
+		config.Broker,
+		config.UpstreamTimeout,
+		config.Topics,
+		config.RebuildInterval,
+		strconv.FormatBool(config.AsyncFunctionInvocation),
+	)
 
 	broker, err := nats.NewBroker(brokerConfig)
 
