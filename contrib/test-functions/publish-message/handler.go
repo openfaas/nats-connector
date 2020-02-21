@@ -31,18 +31,22 @@ func Handle(req handler.Request) (handler.Response, error) {
 
 	nc, err := nats.Connect(natsURL)
 	if err != nil {
+		errMsg := fmt.Sprintf("can not connect to nats: %s", err)
+		log.Printf(errMsg)
 		r := handler.Response{
-			Body:       []byte(fmt.Sprintf("can not connect to nats: %s", err)),
+			Body:       []byte(errMsg),
 			StatusCode: http.StatusInternalServerError,
 		}
 		return r, err
 	}
 	defer nc.Close()
 
-	log.Printf("Sending %q to %q\n", msg, subject)
+	log.Printf("Publishing %d bytes to: %q\n", len(msg), subject)
+
 	err = nc.Publish(subject, []byte(msg))
 	if err != nil {
 		log.Println(err)
+
 		r := handler.Response{
 			Body:       []byte(fmt.Sprintf("can not publish to nats: %s", err)),
 			StatusCode: http.StatusInternalServerError,
@@ -51,7 +55,7 @@ func Handle(req handler.Request) (handler.Response, error) {
 	}
 
 	return handler.Response{
-		Body:       []byte(fmt.Sprintf("Sent %q", msg)),
+		Body:       []byte(fmt.Sprintf("Published %d bytes to: %q", len(msg), subject)),
 		StatusCode: http.StatusOK,
 	}, nil
 }

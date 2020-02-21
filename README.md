@@ -28,10 +28,10 @@ The following instructions show how to run and test `nats-connector` on Kubernet
    faas-cli deploy --name receive-message --image openfaas/receive-message:latest --fprocess='./handler' --annotation topic="nats-test"
    ```
 
-   Alternatively, you can deploy with the `stack.yml` provided in this repo
+   Or deploy with the `stack.yml` provided in this repo:
    ```
    cd contrib/test-functions
-   faas-cli deploy -f stack.yml
+   faas-cli deploy --filter receive-message
    ```
 
 2. Deploy the connector with:
@@ -40,12 +40,20 @@ The following instructions show how to run and test `nats-connector` on Kubernet
    kubectl apply -f ./yaml/kubernetes/connector-dep.yml
    ```
 
-3. Now publish a message on the `nats-test` topic.  We have provided a simple function to help do this
+3. Deploy the `publish-message` function
 
    ```bash
    faas-cli deploy --name publish-message --image openfaas/publish-message:latest --fprocess='./handler' --env nats_url=nats://nats.openfaas:4222
    ```
-   If you used the `stack.yml` in step 1, then this function is already deployed.
+
+   Or deploy via `stack.yml`
+
+      ```
+   cd contrib/test-functions
+   faas-cli deploy --filter receive-message
+   ```
+
+4. Now publish a message on the `nats-test` topic. 
 
    Invoke the publisher
    ```bash
@@ -60,5 +68,11 @@ The following instructions show how to run and test `nats-connector` on Kubernet
    2019-12-29T19:06:50Z 2019/12/29 19:06:50 received "test message"
    ```
 
-### Configuring the NATS topics
-If you want to configure the topics that the connector listens to, then edit the `topics` env variable in  [yaml/kubernetes/connector-dep.yaml](./yaml/kubernetes/connector-dep.yaml)
+### Configuration
+
+Configuration is by environment variable, which can be set in the Kubernetes YAML file: [yaml/kubernetes/connector-dep.yaml](./yaml/kubernetes/connector-dep.yaml)
+
+| Environment variable | Description                   |  Default                                        |
+| -------------------- | --------------------------------------------------------------------------------|
+| `topics`             | Deliminated list of topics    |  `nats-test,`                                   |
+| `async-invocation`   | Queue the invocation with the built-in OpenFaaS queue-worker and return immediately    |  `false` |
