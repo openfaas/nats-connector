@@ -4,6 +4,8 @@
 package main
 
 import (
+	"log"
+
 	"github.com/openfaas-incubator/connector-sdk/types"
 	"github.com/openfaas-incubator/nats-connector/config"
 	"github.com/openfaas-incubator/nats-connector/nats"
@@ -29,9 +31,17 @@ func main() {
 
 	brokerConfig := nats.BrokerConfig{
 		Host:        config.Broker,
-		ConnTimeout: config.UpstreamTimeout,
+		ConnTimeout: config.UpstreamTimeout, // ConnTimeout isn't the same as UpstreamTimeout, it's just the delay to connect to NATS.
 	}
 
-	broker := nats.NewBroker(brokerConfig)
-	broker.Subscribe(controller, config.Topics)
+	broker, err := nats.NewBroker(brokerConfig)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	err = broker.Subscribe(controller, config.Topics)
+	if err != nil {
+		log.Fatal(err)
+	}
 }
