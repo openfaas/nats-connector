@@ -10,7 +10,7 @@ import (
 	"time"
 )
 
-const defaultRebuild = time.Second * 3
+const defaultRebuild = time.Second * 5
 const defaultUpstreamTimeout = time.Second * 60
 
 // Config for the NATS Connector
