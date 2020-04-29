@@ -1,5 +1,5 @@
-/// Copyright (c) OpenFaaS Author(s) 2020. All rights reserved.
-/// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+// Copyright (c) OpenFaaS Author(s) 2020. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 package nats
 
@@ -25,6 +25,9 @@ type BrokerConfig struct {
 
 	// ConnTimeout is the timeout for Dial on a connection.
 	ConnTimeout time.Duration
+
+	// Credentials is a file path to NATS credentials
+	Credentials string
 }
 
 // Broker used to subscribe to NATS subjects
@@ -44,10 +47,36 @@ func NewBroker(config BrokerConfig) (Broker, error) {
 	broker := &broker{}
 	brokerURL := fmt.Sprintf("nats://%s:%s", config.Host, NATSPort)
 
+	opts := []nats.Option{
+		nats.Timeout(config.ConnTimeout),
+		nats.Name(clientName),
+		nats.MaxReconnects(-1),
+		nats.ErrorHandler(func(nc *nats.Conn, s *nats.Subscription, err error) {
+			if s != nil {
+				log.Fatalf("Error in NATS connection: %s: subscription: %s: %s", nc.ConnectedUrl(), s.Subject, err)
+				return
+			}
+
+			log.Fatalf("Error in NATS connection: %s: %s", nc.ConnectedUrl(), err)
+		}),
+		nats.ReconnectHandler(func(nc *nats.Conn) {
+			log.Printf("Reconnected to %s", nc.ConnectedUrl())
+		}),
+		nats.DisconnectErrHandler(func(_ *nats.Conn, err error) {
+			if err != nil {
+				log.Printf("Disconnected from NATS due to error: %v", err)
+			} else {
+				log.Printf("Disconnected from NATS")
+			}
+		}),
+	}
+
+	if config.Credentials != "" {
+		opts = append(opts, nats.UserCredentials(config.Credentials))
+	}
+
 	for {
-		client, err := nats.Connect(brokerURL,
-			nats.Timeout(config.ConnTimeout),
-			nats.Name(clientName))
+		client, err := nats.Connect(brokerURL, opts...)
 
 		if client != nil && err == nil {
 			broker.client = client
@@ -77,7 +106,7 @@ func (b *broker) Subscribe(controller types.Controller, topics []string) error {
 	wg := sync.WaitGroup{}
 	wg.Add(1)
 
-	subs := []*nats.Subscription{}
+	var subs []*nats.Subscription
 	for _, topic := range topics {
 		log.Printf("Binding to topic: %q", topic)
 

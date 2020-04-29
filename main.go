@@ -34,6 +34,7 @@ func main() {
 	brokerConfig := nats.BrokerConfig{
 		Host:        config.Broker,
 		ConnTimeout: config.UpstreamTimeout, // ConnTimeout isn't the same as UpstreamTimeout, it's just the delay to connect to NATS.
+		Credentials: config.Credentials,
 	}
 
 	fmt.Printf(`==============================================================================
@@ -41,6 +42,7 @@ NATS Connector for OpenFaaS
 
 Gateway URL: %s
 NATS URL: nats://%s:4222
+Credentials: %s
 Topics: %s
 Upstream timeout: %s
 Topic-map rebuild interval: %s
@@ -49,6 +51,7 @@ Async invocation: %q
 
 `, config.GatewayURL,
 		config.Broker,
+		config.Credentials,
 		config.UpstreamTimeout,
 		config.Topics,
 		config.RebuildInterval,

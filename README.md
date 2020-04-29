@@ -80,6 +80,7 @@ Configuration is by environment variable, which can be set in the Kubernetes YAM
 | -------------------- | ------------------------------|--------------------------------------------------|
 | `topics`             | Delimited list of topics    |  `nats-test,`                                   |
 | `broker_host`        | The host, but not the port for NATS | `nats` |
+| `broker_credentials` | Path to a NATS credentials file for authenticated connections | unauthenticated |
 | `async-invocation`   | Queue the invocation with the built-in OpenFaaS queue-worker and return immediately    |  `false` |
 | `gateway_url`        | The URL for the OpenFaaS gateway | `http://gateway:8080` |
 | `upstream_timeout`   | Timeout to wait for synchronous invocations | `60s` |

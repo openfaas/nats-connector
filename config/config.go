@@ -15,8 +15,9 @@ const defaultUpstreamTimeout = time.Second * 60
 
 // Config for the NATS Connector
 type Config struct {
-	Broker string
-	Topics []string
+	Broker      string
+	Topics      []string
+	Credentials string
 
 	GatewayURL               string
 	UpstreamTimeout          time.Duration
@@ -99,6 +100,7 @@ func Get() Config {
 	return Config{
 		Broker:                   broker,
 		Topics:                   topics,
+		Credentials:              os.Getenv("broker_credentials"),
 		GatewayURL:               gatewayURL,
 		UpstreamTimeout:          upstreamTimeout,
 		RebuildInterval:          rebuildInterval,
