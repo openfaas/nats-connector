@@ -26,13 +26,14 @@ The following instructions show how to run and test `nats-connector` on Kubernet
    Or deploy with the `stack.yml` provided in this repo:
    ```
    cd contrib/test-functions
+   faas-cli template store pull golang-http
    faas-cli deploy --filter receive-message
    ```
 
 2. Deploy the connector with:
 
    ```bash
-   kubectl apply -f ./yaml/kubernetes/connector-dep.yml
+   kubectl apply -f ./yaml/kubernetes/connector-dep.yaml
    ```
 
 3. Deploy the `publish-message` function
@@ -45,7 +46,8 @@ The following instructions show how to run and test `nats-connector` on Kubernet
 
       ```
    cd contrib/test-functions
-   faas-cli deploy --filter receive-message
+   faas-cli template store pull golang-http
+   faas-cli deploy --filter publish-message
    ```
 
 4. Now publish a message on the `nats-test` topic. 
