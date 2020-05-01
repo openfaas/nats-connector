@@ -49,8 +49,8 @@ Async invocation: %q
 
 `, config.GatewayURL,
 		config.Broker,
-		config.UpstreamTimeout,
 		config.Topics,
+		config.UpstreamTimeout,
 		config.RebuildInterval,
 		strconv.FormatBool(config.AsyncFunctionInvocation),
 	)
