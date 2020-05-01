@@ -26,8 +26,7 @@ The following instructions show how to run and test `nats-connector` on Kubernet
    Or deploy with the `stack.yml` provided in this repo:
    ```
    cd contrib/test-functions
-   faas-cli template pull stack
-   faas-cli deploy --filter receive-message
+   faas-cli deploy --filter receive-message --read-template=false
    ```
 
 2. Deploy the connector with:
@@ -46,8 +45,7 @@ The following instructions show how to run and test `nats-connector` on Kubernet
 
       ```
    cd contrib/test-functions
-   faas-cli template pull stack
-   faas-cli deploy --filter publish-message
+   faas-cli deploy --filter publish-message --read-template=false
    ```
 
 4. Now publish a message on the `nats-test` topic. 
