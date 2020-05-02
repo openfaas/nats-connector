@@ -3,7 +3,7 @@ NAMESPACE?=openfaas
 .PHONY: build
 
 build:
-	docker build -t openfaas/nats-connector:$(TAG) .
+	docker build -t $(NAMESPACE)/nats-connector:$(TAG) .
 
 push:
-	docker push openfaas/nats-connector:$(TAG)
+	docker push $(NAMESPACE)/nats-connector:$(TAG)
