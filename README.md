@@ -87,3 +87,4 @@ Configuration is by environment variable, which can be set in the Kubernetes YAM
 | `upstream_timeout`   | Timeout to wait for synchronous invocations | `60s` |
 | `rebuild_interval`   | Interval at which to rebuild the map of topics <> functions | `5s`  |
 | `topic_delimiter`    | Used to separate items in `topics` variable | `,` |
+
