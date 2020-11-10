@@ -1,4 +1,4 @@
-name: Docker Tagged Build
+name: publish
 
 on:
   push:
@@ -40,7 +40,7 @@ jobs:
         with:
           platforms: linux/amd64,linux/arm/v7,linux/arm64
           push: true
-          tags: ghcr.io/openfaas/nats-connector:${{ steps.get_tag.outputs.TAG }}
-
-      - name: Image digest
-        run: echo ${{ steps.docker_build.outputs.digest }}
+          tags: |
+            ghcr.io/openfaas/nats-connector:${{ github.sha }}
+            ghcr.io/openfaas/nats-connector:${{ steps.get_tag.outputs.TAG }}
+            ghcr.io/openfaas/nats-connector:latest

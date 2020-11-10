@@ -1,10 +1,10 @@
-name: Docker Build
+name: build
 
 on:
   push:
     branches:
       - "*"
-  push_request:
+  pull_request:
     branches:
       - "*"
 
