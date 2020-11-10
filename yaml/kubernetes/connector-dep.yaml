@@ -20,7 +20,7 @@ spec:
     spec:
       containers:
       - name: nats-connector
-        image: openfaas/nats-connector:0.2.2
+        image: ghcr.io/openfaas/nats-connector:0.2.4
         env:
           - name: upstream_timeout
             value: "1m1s"

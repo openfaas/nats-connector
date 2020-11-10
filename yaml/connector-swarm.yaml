@@ -21,7 +21,7 @@ services:
           - 'node.platform.os == linux'
 
   connector:
-    image: openfaas/nats-connector:0.2.0
+    image: openfaas/nats-connector:0.2.4
     hostname: nats-connector
     environment:
       gateway_url: http://gateway:8080

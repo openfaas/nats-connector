@@ -1,8 +1,8 @@
 # nats-connector
 
-[![Docker Build Status](https://github.com/openfaas-incubator/nats-connector/workflows/docker/badge.svg)](https://github.com/openfaas-incubator/nats-connector/actions)
-[![Go Report Card](https://goreportcard.com/badge/github.com/openfaas-incubator/nats-connector)](https://goreportcard.com/report/github.com/openfaas-incubator/nats-connector)
-[![GoDoc](https://godoc.org/github.com/openfaas-incubator/nats-connector?status.svg)](https://godoc.org/github.com/openfaas-incubator/nats-connector)
+[![Docker Build Status](https://github.com/openfaas/nats-connector/workflows/build/badge.svg)](https://github.com/openfaas/nats-connector/actions)
+[![Go Report Card](https://goreportcard.com/badge/github.com/openfaas/nats-connector)](https://goreportcard.com/report/github.com/openfaas/nats-connector)
+[![GoDoc](https://godoc.org/github.com/openfaas/nats-connector?status.svg)](https://godoc.org/github.com/openfaas/nats-connector)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![OpenFaaS](https://img.shields.io/badge/openfaas-serverless-blue.svg)](https://www.openfaas.com)
 
