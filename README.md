@@ -20,7 +20,7 @@ The following instructions show how to run and test `nats-connector` on Kubernet
 
    ```bash
    export OPENFAAS_URL="http://localhost:8080" # Set your gateway via env variable or the -g flag
-   faas-cli deploy --name receive-message --image openfaas/receive-message:latest --fprocess='./handler' --annotation topic="nats-test"
+   faas-cli deploy --name receive-message --image openfaas/nats-receive-message:latest --fprocess='./handler' --annotation topic="nats-test"
    ```
 
    Or deploy with the `stack.yml` provided in this repo:
@@ -39,7 +39,7 @@ The following instructions show how to run and test `nats-connector` on Kubernet
 3. Deploy the `publish-message` function
 
    ```bash
-   faas-cli deploy --name publish-message --image openfaas/publish-message:latest --fprocess='./handler' --env nats_url=nats://nats.openfaas:4222
+   faas-cli deploy --name publish-message --image openfaas/nats-publish-message:latest --fprocess='./handler' --env nats_url=nats://nats.openfaas:4222
    ```
 
    Or deploy via `stack.yml`
