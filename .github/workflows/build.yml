@@ -26,10 +26,21 @@ jobs:
         with:
           version: latest
 
+      - name: Get TAG
+        id: get_tag
+        run: echo ::set-output name=TAG::latest-dev
+      
+      - name: Get Repo Owner
+        id: get_repo_owner
+        run: echo ::set-output name=repo_owner::$(echo ${{ github.repository_owner }} | tr '[:upper:]' '[:lower:]')
+
       - name: Build
         id: docker_build
         uses: docker/build-push-action@v2
         with:
-          push: false
+          outputs: "type=image,push=false"
           platforms: linux/amd64,linux/arm/v7,linux/arm64
-          tags: ghcr.io/openfaas/nats-connector:latest-dev
+          tags: |
+            ghcr.io/${{ steps.get_repo_owner.outputs.repo_owner }}/nats-connector:${{ steps.get_tag.outputs.TAG }}
+            ghcr.io/${{ steps.get_repo_owner.outputs.repo_owner }}/nats-connector:${{ github.sha }}
+            ghcr.io/${{ steps.get_repo_owner.outputs.repo_owner }}/nats-connector:latest
