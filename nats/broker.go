@@ -6,11 +6,12 @@ package nats
 import (
 	"fmt"
 	"log"
+	"net/http"
 	"sync"
 	"time"
 
 	nats "github.com/nats-io/nats.go"
-	"github.com/openfaas-incubator/connector-sdk/types"
+	"github.com/openfaas/connector-sdk/types"
 )
 
 const queueGroup = "openfaas_nats_worker_group"
@@ -83,8 +84,9 @@ func (b *broker) Subscribe(controller types.Controller, topics []string) error {
 
 		sub, err := b.client.QueueSubscribe(topic, queueGroup, func(m *nats.Msg) {
 			log.Printf("Topic: %s, message: %q", m.Subject, string(m.Data))
-
-			controller.Invoke(m.Subject, &m.Data)
+			controller.Invoke(m.Subject, &m.Data, http.Header{
+				"X-Topic": []string{m.Subject},
+			})
 		})
 		subs = append(subs, sub)
 

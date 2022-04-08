@@ -8,7 +8,7 @@ ARG TARGETARCH
 ENV GO111MODULE=on
 ENV CGO_ENABLED=0
 
-WORKDIR /go/src/github.com/openfaas-incubator/nats-connector
+WORKDIR /go/src/github.com/openfaas/nats-connector
 
 COPY go.mod	.
 COPY go.sum	.

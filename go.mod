@@ -1,12 +1,11 @@
-module github.com/openfaas-incubator/nats-connector
+module github.com/openfaas/nats-connector
 
-go 1.13
+go 1.16
 
 require (
-	github.com/nats-io/jwt v0.3.2 // indirect
-	github.com/nats-io/nats.go v1.9.1
-	github.com/openfaas-incubator/connector-sdk v0.0.0-20191214130609-df5d76475412
-	github.com/openfaas/faas-provider v0.0.0-20191215182504-d6579bdcf7c8 // indirect
-	github.com/pkg/errors v0.8.1 // indirect
-	golang.org/x/crypto v0.0.0-20191227163750-53104e6ec876 // indirect
+	github.com/golang/protobuf v1.5.2 // indirect
+	github.com/nats-io/nats-server/v2 v2.7.4 // indirect
+	github.com/nats-io/nats.go v1.13.1-0.20220308171302-2f2f6968e98d
+	github.com/openfaas/connector-sdk v0.6.6
+	github.com/openfaas/faas-provider v0.18.9 // indirect
 )
