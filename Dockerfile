@@ -8,6 +8,9 @@ ARG TARGETARCH
 ENV GO111MODULE=on
 ENV CGO_ENABLED=0
 
+ENV GIT_COMMIT
+ENV VERSION
+
 WORKDIR /go/src/github.com/openfaas/nats-connector
 
 COPY go.mod	.
