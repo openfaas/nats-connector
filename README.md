@@ -33,8 +33,10 @@ The following instructions show how to run and test `nats-connector` on Kubernet
 2. Deploy the connector with:
 
    ```bash
-   kubectl apply -f ./yaml/kubernetes/connector-dep.yaml
+   arkade install nats-connector
    ```
+
+   Or deploy via the [nats-connector Helm chart](https://github.com/openfaas/faas-netes/tree/master/chart/nats-connector) instead
 
 3. Deploy the `publish-message` function
 
@@ -76,7 +78,7 @@ make build push
 
 ### Configuration
 
-Configuration is by environment variable, which can be set in the Kubernetes YAML file: [yaml/kubernetes/connector-dep.yaml](./yaml/kubernetes/connector-dep.yaml)
+Configuration of the binary is by environment variable. The names vary for the values.yaml file in [the Helm chart](https://github.com/openfaas/faas-netes/tree/master/chart/nats-connector).
 
 | Variable             | Description                   |  Default                                        |
 | -------------------- | ------------------------------|--------------------------------------------------|
@@ -87,4 +89,3 @@ Configuration is by environment variable, which can be set in the Kubernetes YAM
 | `upstream_timeout`   | Timeout to wait for synchronous invocations | `60s` |
 | `rebuild_interval`   | Interval at which to rebuild the map of topics <> functions | `5s`  |
 | `topic_delimiter`    | Used to separate items in `topics` variable | `,` |
-
