@@ -5,11 +5,11 @@ ARG BUILDPLATFORM
 ARG TARGETOS
 ARG TARGETARCH
 
-ENV GO111MODULE=on
+ARG GO111MODULE
 ENV CGO_ENABLED=0
 
-ENV GIT_COMMIT
-ENV VERSION
+ARG GIT_COMMIT
+ARG VERSION
 
 WORKDIR /go/src/github.com/openfaas/nats-connector
 
@@ -23,8 +23,9 @@ COPY main.go    .
 RUN test -z "$(gofmt -l $(find . -type f -name '*.go' -not -path "./vendor/*"))"
 
 RUN go test -v ./...
-RUN CGO_ENABLED=0 GOOS=${TARGETOS} GOARCH=${TARGETARCH} go build -a -ldflags "-s -w" -installsuffix cgo -o /usr/bin/connector
-
+RUN CGO_ENABLED=0 GOOS=${TARGETOS} GOARCH=${TARGETARCH} go build -a -ldflags "-s -w" -installsuffix cgo 
+        --ldflags "-s -w -X 'github.com/openfaas/nats-connector/version.GitCommit=${GIT_COMMIT}' -X 'github.com/openfaas/nats-connector/version.Version=${VERSION}'" \
+        -a -installsuffix cgo -o /usr/bin/connector
 FROM --platform=${TARGETPLATFORM:-linux/amd64} alpine:3.15 as ship
 RUN apk add --no-cache ca-certificates
 
