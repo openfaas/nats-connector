@@ -7,6 +7,7 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"net/http"
 	"sync"
 	"time"
 
@@ -24,8 +25,11 @@ type ControllerConfig struct {
 	// PrintResponse if true prints the function responses
 	PrintResponse bool
 
-	// PrintResponseBody if true prints the function response body to stdout
+	// PrintResponseBody prints the function's response body to stdout
 	PrintResponseBody bool
+
+	// PrintRequestBody prints the request's body to stdout.
+	PrintRequestBody bool
 
 	// RebuildInterval the interval at which the topic map is rebuilt
 	RebuildInterval time.Duration
@@ -38,13 +42,20 @@ type ControllerConfig struct {
 
 	// PrintSync indicates whether the sync should be logged.
 	PrintSync bool
+
+	// ContentType defines which content type will be set in the header to inkoke the function. i.e "application/json".
+	// Optional, if not set the Content-Type header will not be set.
+	ContentType string
+
+	// BasicAuth whether basic auth is enabled or disabled
+	BasicAuth bool
 }
 
 // Controller is used to invoke functions on a per-topic basis and to subscribe to responses returned by said functions.
 type Controller interface {
 	Subscribe(subscriber ResponseSubscriber)
-	Invoke(topic string, message *[]byte)
-	InvokeWithContext(ctx context.Context, topic string, message *[]byte)
+	Invoke(topic string, message *[]byte, headers http.Header)
+	InvokeWithContext(ctx context.Context, topic string, message *[]byte, headers http.Header)
 	BeginMapBuilder()
 	Topics() []string
 }
@@ -79,7 +90,9 @@ func NewController(credentials *auth.BasicAuthCredentials, config *ControllerCon
 
 	invoker := NewInvoker(gatewayFunctionPath,
 		MakeClient(config.UpstreamTimeout),
-		config.PrintResponse)
+		config.ContentType,
+		config.PrintResponse,
+		config.PrintRequestBody)
 
 	subs := []ResponseSubscriber{}
 
@@ -126,14 +139,14 @@ func (c *controller) Subscribe(subscriber ResponseSubscriber) {
 
 // Invoke attempts to invoke any functions which match the
 // topic the incoming message was published on.
-func (c *controller) Invoke(topic string, message *[]byte) {
-	c.InvokeWithContext(context.Background(), topic, message)
+func (c *controller) Invoke(topic string, message *[]byte, headers http.Header) {
+	c.InvokeWithContext(context.Background(), topic, message, headers)
 }
 
 // InvokeWithContext attempts to invoke any functions which match the topic
 // the incoming message was published on while propagating context.
-func (c *controller) InvokeWithContext(ctx context.Context, topic string, message *[]byte) {
-	c.Invoker.InvokeWithContext(ctx, c.TopicMap, topic, message)
+func (c *controller) InvokeWithContext(ctx context.Context, topic string, message *[]byte, headers http.Header) {
+	c.Invoker.InvokeWithContext(ctx, c.TopicMap, topic, message, headers)
 }
 
 // BeginMapBuilder begins to build a map of function->topic by
@@ -182,7 +195,7 @@ func (c *controller) Topics() []string {
 }
 
 func gatewayRoute(config *ControllerConfig) string {
-	if config.AsyncFunctionInvocation == true {
+	if config.AsyncFunctionInvocation {
 		return fmt.Sprintf("%s/%s", config.GatewayURL, "async-function")
 	}
 	return fmt.Sprintf("%s/%s", config.GatewayURL, "function")

@@ -8,9 +8,9 @@ import (
 	"log"
 	"strconv"
 
-	"github.com/openfaas-incubator/connector-sdk/types"
-	"github.com/openfaas-incubator/nats-connector/config"
-	"github.com/openfaas-incubator/nats-connector/nats"
+	"github.com/openfaas/connector-sdk/types"
+	"github.com/openfaas/nats-connector/config"
+	"github.com/openfaas/nats-connector/nats"
 )
 
 func main() {
