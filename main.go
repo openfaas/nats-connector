@@ -11,6 +11,7 @@ import (
 	"github.com/openfaas/connector-sdk/types"
 	"github.com/openfaas/nats-connector/config"
 	"github.com/openfaas/nats-connector/nats"
+	"github.com/openfaas/nats-connector/version"
 )
 
 func main() {
@@ -36,8 +37,9 @@ func main() {
 		ConnTimeout: config.UpstreamTimeout, // ConnTimeout isn't the same as UpstreamTimeout, it's just the delay to connect to NATS.
 	}
 
+	sha, ver := version.GetReleaseInfo()
 	fmt.Printf(`==============================================================================
-NATS Connector for OpenFaaS
+NATS Connector for OpenFaaS %s (%s)
 
 Gateway URL: %s
 NATS URL: nats://%s:4222
@@ -47,7 +49,9 @@ Topic-map rebuild interval: %s
 Async invocation: %q
 ==============================================================================
 
-`, config.GatewayURL,
+`, sha,
+		ver,
+		config.GatewayURL,
 		config.Broker,
 		config.Topics,
 		config.UpstreamTimeout,
