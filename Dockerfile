@@ -16,6 +16,7 @@ WORKDIR /go/src/github.com/openfaas/nats-connector
 COPY go.mod	.
 COPY go.sum	.
 COPY config	    config
+COPY version    version
 COPY nats	    nats
 COPY main.go    .
 
