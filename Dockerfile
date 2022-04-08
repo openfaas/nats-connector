@@ -1,4 +1,4 @@
-FROM --platform=${BUILDPLATFORM:-linux/amd64} golang:1.13 as build
+FROM --platform=${BUILDPLATFORM:-linux/amd64} golang:1.17 as build
 
 ARG TARGETPLATFORM
 ARG BUILDPLATFORM
@@ -12,7 +12,6 @@ WORKDIR /go/src/github.com/openfaas/nats-connector
 
 COPY go.mod	.
 COPY go.sum	.
-COPY vendor     vendor
 COPY config	    config
 COPY nats	    nats
 COPY main.go    .
@@ -20,10 +19,10 @@ COPY main.go    .
 # Run a gofmt and exclude all vendored code.
 RUN test -z "$(gofmt -l $(find . -type f -name '*.go' -not -path "./vendor/*"))"
 
-RUN go test -mod=vendor -v ./...
-RUN CGO_ENABLED=0 GOOS=${TARGETOS} GOARCH=${TARGETARCH} go build -mod=vendor -a -ldflags "-s -w" -installsuffix cgo -o /usr/bin/connector
+RUN go test -v ./...
+RUN CGO_ENABLED=0 GOOS=${TARGETOS} GOARCH=${TARGETARCH} go build -a -ldflags "-s -w" -installsuffix cgo -o /usr/bin/connector
 
-FROM --platform=${TARGETPLATFORM:-linux/amd64} alpine:3.12 as ship
+FROM --platform=${TARGETPLATFORM:-linux/amd64} alpine:3.15 as ship
 RUN apk add --no-cache ca-certificates
 
 COPY --from=build /usr/bin/connector /usr/bin/connector
