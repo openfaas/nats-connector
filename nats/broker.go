@@ -37,7 +37,7 @@ type broker struct {
 	client *nats.Conn
 }
 
-// NATSPort hard-coded port for NATS
+// NATSPort for the NATS server
 const NATSPort = "4222"
 
 // NewBroker loops until we are able to connect to the NATS server
@@ -84,14 +84,15 @@ func (b *broker) Subscribe(controller types.Controller, topics []string) error {
 
 		sub, err := b.client.QueueSubscribe(topic, queueGroup, func(m *nats.Msg) {
 			log.Printf("Topic: %s, message: %q", m.Subject, string(m.Data))
-			controller.Invoke(m.Subject, &m.Data, http.Header{
-				"X-Topic": []string{m.Subject},
-			})
+
+			headers := http.Header{}
+			controller.Invoke(m.Subject, &m.Data, headers)
 		})
-		subs = append(subs, sub)
 
 		if err != nil {
 			log.Printf("Unable to bind to topic: %s", topic)
+		} else {
+			subs = append(subs, sub)
 		}
 	}
 
@@ -99,10 +100,9 @@ func (b *broker) Subscribe(controller types.Controller, topics []string) error {
 		log.Printf("Subscription: %s ready", sub.Subject)
 	}
 
-	// interrupt handling
 	wg.Wait()
 
-	b.client.Close()
+	defer b.client.Close()
 
 	return nil
 }

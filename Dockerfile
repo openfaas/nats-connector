@@ -1,4 +1,4 @@
-FROM --platform=${BUILDPLATFORM:-linux/amd64} golang:1.17 as build
+FROM --platform=${BUILDPLATFORM:-linux/amd64} golang:1.18 as build
 
 ARG TARGETPLATFORM
 ARG BUILDPLATFORM
@@ -27,7 +27,8 @@ RUN go test -v ./...
 RUN CGO_ENABLED=0 GOOS=${TARGETOS} GOARCH=${TARGETARCH} go build -a -ldflags "-s -w" -installsuffix cgo \
         --ldflags "-s -w -X 'github.com/openfaas/nats-connector/version.GitCommit=${GIT_COMMIT}' -X 'github.com/openfaas/nats-connector/version.Version=${VERSION}'" \
         -a -installsuffix cgo -o /usr/bin/connector
-FROM --platform=${TARGETPLATFORM:-linux/amd64} alpine:3.15 as ship
+
+FROM --platform=${TARGETPLATFORM:-linux/amd64} alpine:3.16.2 as ship
 RUN apk add --no-cache ca-certificates
 
 COPY --from=build /usr/bin/connector /usr/bin/connector

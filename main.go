@@ -60,13 +60,11 @@ Async invocation: %q
 	)
 
 	broker, err := nats.NewBroker(brokerConfig)
-
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	err = broker.Subscribe(controller, config.Topics)
-	if err != nil {
+	if err = broker.Subscribe(controller, config.Topics); err != nil {
 		log.Fatal(err)
 	}
 }
