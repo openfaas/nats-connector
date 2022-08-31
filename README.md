@@ -6,9 +6,17 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![OpenFaaS](https://img.shields.io/badge/openfaas-serverless-blue.svg)](https://www.openfaas.com)
 
-An OpenFaaS event-connector to trigger functions from NATS pub/sub topics.
+An OpenFaaS event-connector to trigger functions from NATS Core pub/sub topics.
 
-This integration only supports pub/sub topics, so if you need durability, and the ability to scale out, check out [JetStream for OpenFaaS instead](https://www.openfaas.com/blog/jetstream-for-openfaas/).
+## Is the nats-connector or JetStream for OpenFaaS right for you?
+
+> At most once QoS: Core NATS offers an at most once quality of service. If a subscriber is not listening on the subject (no subject match), or is not active when the message is sent, the message is not received. This is the same level of guarantee that TCP/IP provides. Core NATS is a fire-and-forget messaging system. It will only hold messages in memory and will never write messages directly to disk.
+
+[From the NATS docs](https://docs.nats.io/nats-concepts/what-is-nats)
+
+If no nats-connector is available at the time of a message being published, it will not be delivered to any functions. Likewise, if the function is unavailable or crashing, it will not receive the message. NATS Core has no durability.
+
+For production and commercial use, see: [JetStream for OpenFaaS](https://www.openfaas.com/blog/jetstream-for-openfaas/)
 
 ## Quick start
 
@@ -63,7 +71,7 @@ Configuration of the binary is by environment variable. The names vary for the v
 | -------------------- | ------------------------------|--------------------------------------------------|
 | `topics`             | Delimited list of topics    |  `nats-test,`                                   |
 | `broker_host`        | The host, but not the port for NATS | `nats` |
-| `async-invocation`   | Queue the invocation with the built-in OpenFaaS queue-worker and return immediately    |  `false` |
+| `async_invocation`   | Queue the invocation with the built-in OpenFaaS queue-worker and return immediately    |  `false` |
 | `gateway_url`        | The URL for the OpenFaaS gateway | `http://gateway:8080` |
 | `upstream_timeout`   | Timeout to wait for synchronous invocations | `60s` |
 | `rebuild_interval`   | Interval at which to rebuild the map of topics <> functions | `5s`  |
