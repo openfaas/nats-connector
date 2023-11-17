@@ -35,9 +35,16 @@ func Get() Config {
 		broker = val
 	}
 
+	delimiter := ","
+	if val, exists := os.LookupEnv("topic_delimiter"); exists {
+		if len(val) > 0 {
+			delimiter = val
+		}
+	}
+
 	topics := []string{}
 	if val, exists := os.LookupEnv("topics"); exists {
-		for _, topic := range strings.Split(val, ",") {
+		for _, topic := range strings.Split(val, delimiter) {
 			if len(topic) > 0 {
 				topics = append(topics, topic)
 			}
@@ -87,13 +94,6 @@ func Get() Config {
 	asyncFunctionInvocation := true
 	if val, exists := os.LookupEnv("asynchronous_invocation"); exists {
 		asyncFunctionInvocation = (val == "1" || val == "true")
-	}
-
-	delimiter := ","
-	if val, exists := os.LookupEnv("topic_delimiter"); exists {
-		if len(val) > 0 {
-			delimiter = val
-		}
 	}
 
 	return Config{
